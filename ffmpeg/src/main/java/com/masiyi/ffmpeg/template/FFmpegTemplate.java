@@ -69,7 +69,7 @@ public class FFmpegTemplate {
             if (exitCode == 0) {
                 log.info("进程正常完成");
             } else {
-                log.info("进程异常结束");
+                log.error("进程异常结束");
             }
         }
         return output.toString();
@@ -105,4 +105,50 @@ public class FFmpegTemplate {
         }
         return out;
     }
+
+    /**
+     * 流复制
+     * 省去了重新编码的时间，格式转换将十分迅速
+     */
+    public void copy(String inputFile, String outputFile) {
+        StringBuilder command = new StringBuilder();
+        command.append(ffmpegPath).append("ffmpeg ").append(" -i ").append(inputFile).append(" -y -c copy ").append(outputFile);
+        try {
+            execute(command.toString());
+            log.info("流复制成功");
+        } catch (IOException | InterruptedException e) {
+            log.error("流复制失败", e);
+        }
+    }
+
+    /**
+     * 提取流（音频、字幕）
+     */
+    public void extract(String inputFile, String outputFile) {
+        StringBuilder command = new StringBuilder();
+        command.append(ffmpegPath).append("ffmpeg ").append(" -i ").append(inputFile).append(" -y -c:a copy ").append(outputFile);
+        try {
+            execute(command.toString());
+            log.info("提取流成功");
+        } catch (IOException | InterruptedException e) {
+            log.error("提取流失败", e);
+        }
+    }
+
+    /**
+     * 截取视频片段
+     */
+    public void captureVideoFootage(String inputFile, String outputFile, String startTime, String endTime) {
+        StringBuilder command = new StringBuilder();
+        command.append(ffmpegPath).append("ffmpeg ").append(" -ss ").append(startTime).append(" -to ").append(endTime).append(" -i ").append(inputFile).append(" -y -c copy ").append(outputFile);
+        try {
+            execute(command.toString());
+            log.info("截取视频片段成功");
+        } catch (IOException | InterruptedException e) {
+            log.error("截取视频片段失败", e);
+        }
+    }
+
+
+
 }
