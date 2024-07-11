@@ -23,9 +23,11 @@ public class FFmpegTemplate {
     /**
      * 执行命令
      */
-    public void execute(String command) throws IOException, InterruptedException {
-        Process process = Runtime.getRuntime().exec(command);
-
+    public String execute(String command) throws IOException, InterruptedException {
+        log.info("执行命令: " + command);
+        Process process = Runtime.getRuntime().exec(java.lang.String.valueOf(command));
+        //命令行输出最终的内容
+        StringBuilder output = new StringBuilder();
         try (InputStream stdoutStream = process.getInputStream();
              BufferedReader stdoutReader = new BufferedReader(new InputStreamReader(stdoutStream, "GBK"));
              InputStream stderrStream = process.getErrorStream();
@@ -36,6 +38,7 @@ public class FFmpegTemplate {
                 try {
                     while ((line = stdoutReader.readLine()) != null) {
                         log.info("控制台输出: " + line);
+                        output.append(line);
                     }
                 } catch (IOException e) {
                     log.error("读取标准输出时发生错误", e);
@@ -69,6 +72,7 @@ public class FFmpegTemplate {
                 log.info("进程异常结束");
             }
         }
+        return output.toString();
     }
 
 
@@ -77,12 +81,28 @@ public class FFmpegTemplate {
      */
     public void convert(String inputFile, String outputFile) {
         StringBuilder command = new StringBuilder();
-        command.append(ffmpegPath).append(" -i ").append(inputFile).append(" -y ").append(outputFile);
+        command.append(ffmpegPath).append("ffmpeg ").append(" -i ").append(inputFile).append(" -y ").append(outputFile);
         try {
             execute(command.toString());
             log.info("格式转换成功");
         } catch (IOException | InterruptedException e) {
             log.error("格式转换失败", e);
         }
+    }
+
+    /**
+     * 提取媒体时长
+     */
+    public String extractAudio(String inputFile) {
+        String out = null;
+        StringBuilder command = new StringBuilder();
+        command.append(ffmpegPath).append("ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 ").append(inputFile);
+        try {
+            out = execute(command.toString());
+            log.info("提取媒体时长成功");
+        } catch (IOException | InterruptedException e) {
+            log.error("提取媒体时长失败", e);
+        }
+        return out;
     }
 }
