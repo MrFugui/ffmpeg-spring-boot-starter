@@ -202,5 +202,17 @@ public class FFmpegTemplate {
         }
     }
 
-
+    /**
+     * 合并视频
+     */
+    public void merge(String inputFile, String outputFile) {
+        StringBuilder command = new StringBuilder();
+        command.append(ffmpegPath).append("ffmpeg ").append(" -f concat -i ").append(inputFile).append(" -y -c copy ").append(outputFile);
+        try {
+            execute(command.toString());
+            log.info("合并视频成功");
+        } catch (IOException | InterruptedException e) {
+            log.error("合并视频失败", e);
+        }
+    }
 }
