@@ -137,10 +137,11 @@ public class FFmpegTemplate {
 
     /**
      * 截取视频片段
-     * @param inputFile 输入文件
-     * @param outputFile 输出文件
-     * @param startTime 开始时间 格式为 HH:MM:SS
-     * @param endTime   结束时间 格式为 HH:MM:SS
+     * <p>
+     * inputFile  输入文件
+     * outputFile 输出文件
+     * startTime  开始时间 格式为 HH:MM:SS
+     * endTime    结束时间 格式为 HH:MM:SS
      */
     public void captureVideoFootage(String inputFile, String outputFile, String startTime, String endTime) {
         StringBuilder command = new StringBuilder();
@@ -153,7 +154,66 @@ public class FFmpegTemplate {
         }
     }
 
+    /**
+     * 分辨率缩放
+     * width  宽度
+     * height 高度
+     */
+    public void scale(String inputFile, String outputFile, Integer width, Integer height) {
+        StringBuilder command = new StringBuilder();
+        command.append(ffmpegPath).append("ffmpeg ").append(" -i ").append(inputFile).append(" -y -vf scale=").append(width).append(":").append(height).append(" ").append(outputFile);
+        try {
+            execute(command.toString());
+            log.info("分辨率缩放成功");
+        } catch (IOException | InterruptedException e) {
+            log.error("分辨率缩放失败", e);
+        }
+    }
 
+    /**
+     * 裁切
+     * x      x坐标
+     * y      y坐标
+     * width  宽度
+     * height 高度
+     */
+    public void cut(String inputFile, String outputFile, Integer x, Integer y, Integer width, Integer height) {
+        StringBuilder command = new StringBuilder();
+        command.append(ffmpegPath).append("ffmpeg ").append(" -i ").append(inputFile).append(" -y -vf crop=").append(width).append(":").append(height).append(":").append(x).append(":").append(y).append(" ").append(outputFile);
+        try {
+            execute(command.toString());
+            log.info("裁切成功");
+        } catch (IOException | InterruptedException e) {
+            log.error("裁切失败", e);
+        }
+    }
+
+    /**
+     * 设置视频预览图
+     */
+    public void setVideoPreview(String inputFile, String outputFile) {
+        StringBuilder command = new StringBuilder();
+        command.append(ffmpegPath).append("ffmpeg ").append(" -i ").append(inputFile).append(" -y -vf fps=1/10 -vframes 1 ").append(outputFile);
+        try {
+            execute(command.toString());
+            log.info("设置视频预览图成功");
+        } catch (IOException | InterruptedException e) {
+            log.error("设置视频预览图失败", e);
+        }
+    }
+
+    /**
+     * 内嵌字幕
+     */
+    public void embedSubtitle(String inputFile, String outputFile, String subtitleFile) {
+        StringBuilder command = new StringBuilder();
+        command.append(ffmpegPath).append("ffmpeg ").append(" -i ").append(inputFile).append(" -i ").append(subtitleFile).append(" -y -c copy -c:s mov_text ").append(outputFile);
+        try {
+            execute(command.toString());
+            log.info("内嵌字幕成功");
+        } catch (IOException | InterruptedException e) {
+        }
+    }
 
 
 }
