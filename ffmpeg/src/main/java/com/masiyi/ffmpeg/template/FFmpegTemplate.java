@@ -188,19 +188,6 @@ public class FFmpegTemplate {
         }
     }
 
-    /**
-     * 设置视频预览图
-     */
-    public void setVideoPreview(String inputFile, String outputFile) {
-        StringBuilder command = new StringBuilder();
-        command.append(ffmpegPath).append("ffmpeg ").append(" -i ").append(inputFile).append(" -y -vf fps=1/10 -vframes 1 ").append(outputFile);
-        try {
-            execute(command.toString());
-            log.info("设置视频预览图成功");
-        } catch (IOException | InterruptedException e) {
-            log.error("设置视频预览图失败", e);
-        }
-    }
 
     /**
      * 内嵌字幕
