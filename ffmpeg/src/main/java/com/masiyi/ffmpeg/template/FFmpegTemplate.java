@@ -137,6 +137,10 @@ public class FFmpegTemplate {
 
     /**
      * 截取视频片段
+     * @param inputFile 输入文件
+     * @param outputFile 输出文件
+     * @param startTime 开始时间 格式为 HH:MM:SS
+     * @param endTime   结束时间 格式为 HH:MM:SS
      */
     public void captureVideoFootage(String inputFile, String outputFile, String startTime, String endTime) {
         StringBuilder command = new StringBuilder();
@@ -148,6 +152,7 @@ public class FFmpegTemplate {
             log.error("截取视频片段失败", e);
         }
     }
+
 
 
 
