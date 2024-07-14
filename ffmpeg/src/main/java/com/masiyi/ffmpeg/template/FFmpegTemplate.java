@@ -22,6 +22,10 @@ public class FFmpegTemplate {
 
     /**
      * 执行命令
+     *
+     * @param command 命令
+     * @return 命令结果
+     * 命令格式：ffmpeg -i video.flv video.mp4
      */
     public String execute(String command) throws IOException, InterruptedException {
         log.info("执行命令: " + command);
@@ -78,6 +82,9 @@ public class FFmpegTemplate {
 
     /**
      * 格式转换
+     *
+     * @param inputFile  输入文件
+     * @param outputFile 输出文件
      */
     public void convert(String inputFile, String outputFile) {
         StringBuilder command = new StringBuilder();
@@ -92,6 +99,9 @@ public class FFmpegTemplate {
 
     /**
      * 提取媒体时长
+     *
+     * @param inputFile 输入文件
+     * @return 媒体时长
      */
     public String extractAudio(String inputFile) {
         String out = null;
@@ -109,6 +119,9 @@ public class FFmpegTemplate {
     /**
      * 流复制
      * 省去了重新编码的时间，格式转换将十分迅速
+     *
+     * @param inputFile  输入文件
+     * @param outputFile 输出文件
      */
     public void copy(String inputFile, String outputFile) {
         StringBuilder command = new StringBuilder();
@@ -123,6 +136,9 @@ public class FFmpegTemplate {
 
     /**
      * 提取流（音频、字幕）
+     *
+     * @param inputFile 输入文件
+     *                  输出文件
      */
     public void extract(String inputFile, String outputFile) {
         StringBuilder command = new StringBuilder();
@@ -137,11 +153,11 @@ public class FFmpegTemplate {
 
     /**
      * 截取视频片段
-     * <p>
-     * inputFile  输入文件
-     * outputFile 输出文件
-     * startTime  开始时间 格式为 HH:MM:SS
-     * endTime    结束时间 格式为 HH:MM:SS
+     *
+     * @param inputFile  输入文件
+     * @param outputFile 输出文件
+     * @param startTime  开始时间 格式为 HH:MM:SS
+     * @param endTime    结束时间 格式为 HH:MM:SS
      */
     public void captureVideoFootage(String inputFile, String outputFile, String startTime, String endTime) {
         StringBuilder command = new StringBuilder();
@@ -172,10 +188,11 @@ public class FFmpegTemplate {
 
     /**
      * 裁切
-     * x      x坐标
-     * y      y坐标
-     * width  宽度
-     * height 高度
+     *
+     * @param x      x坐标
+     * @param y      y坐标
+     * @param width  宽度
+     * @param height 高度
      */
     public void cut(String inputFile, String outputFile, Integer x, Integer y, Integer width, Integer height) {
         StringBuilder command = new StringBuilder();
@@ -190,20 +207,33 @@ public class FFmpegTemplate {
 
 
     /**
-     * 内嵌字幕
+     * 内挂字幕
+     *
+     * @param inputFile    输入文件
+     * @param outputFile   输出文件
+     * @param subtitleFile 字幕文件
+     *                     这个方法会将字幕内挂到视频中去，后面可以使用extract 方法提取出来
      */
     public void embedSubtitle(String inputFile, String outputFile, String subtitleFile) {
         StringBuilder command = new StringBuilder();
         command.append(ffmpegPath).append("ffmpeg ").append(" -i ").append(inputFile).append(" -i ").append(subtitleFile).append(" -y -c copy -c:s mov_text ").append(outputFile);
         try {
             execute(command.toString());
-            log.info("内嵌字幕成功");
+            log.info("内挂字幕成功");
         } catch (IOException | InterruptedException e) {
         }
     }
 
     /**
      * 合并视频
+     *
+     * @param inputFile  输入文件
+     *                   为txt文件，每行一个视频文件
+     *                   示例：
+     *                   file '1.mp4'
+     *                   file '2.mp4'
+     *                   file '3.mp4'
+     * @param outputFile 输出文件
      */
     public void merge(String inputFile, String outputFile) {
         StringBuilder command = new StringBuilder();
